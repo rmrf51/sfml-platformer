@@ -1,9 +1,9 @@
 all:
-	g++ -c main.cpp
-	g++ main.o -o sfml-app -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
-	./sfml-app
+	sudo g++ -c main.cpp
+	sudo g++ main.o -o sfml-app -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
+	sudo ./sfml-app
 
 
 clean:
-	rm -f *.o
+	sudo rm -f *.o
 

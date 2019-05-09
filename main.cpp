@@ -1,6 +1,8 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+//#include <stdio.h>
+//#include <unistd.h>
 // #include "ImGui/"
 // #include "ImGui/imgui.cpp"
 // #include "ImGui/imgui_draw.cpp"
@@ -25,25 +27,31 @@ int main()
 
 
 
-
-
+// Хуй его знает (поправить)
+/*
     const unsigned int W = 150;
     const unsigned int H = 150; // you can change this to full window size later
 
-    int *pixels = new int[W*H*4];
+    sf::Uint8 pixels [(W*H)*(4)];
+    //const sf::Uint8 *pByteBuffer = sd::Image::getPixelsPtr();
 
     Image heroimage1;
-    heroimage1.loadFromFile("image/hero.png");
+    //std::cout << heroimage1.loadFromFile("images/test.png"); 
+    heroimage1.loadFromFile("images/test.png");
+    //const sf::Uint8 *pixels [W*H*4] = sf::heroimage1::getPixelsPtr();
+
 
     Texture herotexture1;
     herotexture1.loadFromImage(heroimage1);
 
-    herotexture1.create(W, H);
+    //heroimage1.LoadFromPixels(150, 150, pixels);
+
+    //herotexture1.create(W, H);
 
     sf::Sprite sprite(herotexture1); // needed to draw the texture on screen
 
-    int del = 6;
-    int arr[9] = {-1, -1, -1, -1, 9, -1, -1, -1, -1};
+    sf::Uint8 del = 6;
+    sf::Uint8 arr[9] = {1, 1, 1, 1, 9, 1, 1, 1, 1};
 
     // ...
 
@@ -53,29 +61,22 @@ int main()
    // pixels[i+2] = b;
    // pixels[i+3] = a;
 
-      pixels[i] = (pixels[i - W - 4] * arr[0] + pixels[i - W] * arr[1] + pixels[i - W + 4] * arr[2] + pixels[i - 4] * arr[3] + pixels[i] * arr[4] + pixels[i + 4] * arr[5] + pixels[i + W - 4] * arr[6] + pixels[i + W] * arr[7] + pixels[i + W + 4] * arr[8]) / del;
-    i++;
     pixels[i] = (pixels[i - W - 4] * arr[0] + pixels[i - W] * arr[1] + pixels[i - W + 4] * arr[2] + pixels[i - 4] * arr[3] + pixels[i] * arr[4] + pixels[i + 4] * arr[5] + pixels[i + W - 4] * arr[6] + pixels[i + W] * arr[7] + pixels[i + W + 4] * arr[8]) / del;
     i++;
     pixels[i] = (pixels[i - W - 4] * arr[0] + pixels[i - W] * arr[1] + pixels[i - W + 4] * arr[2] + pixels[i - 4] * arr[3] + pixels[i] * arr[4] + pixels[i + 4] * arr[5] + pixels[i + W - 4] * arr[6] + pixels[i + W] * arr[7] + pixels[i + W + 4] * arr[8]) / del;
     i++;
-        pixels[i] = 255;
+    pixels[i] = (pixels[i - W - 4] * arr[0] + pixels[i - W] * arr[1] + pixels[i - W + 4] * arr[2] + pixels[i - 4] * arr[3] + pixels[i] * arr[4] + pixels[i + 4] * arr[5] + pixels[i + W - 4] * arr[6] + pixels[i + W] * arr[7] + pixels[i + W + 4] * arr[8]) / del;
+    i++;
+        //pixels[i] = 255;
 
     }
 
-    herotexture1.update(&pixels);
+    herotexture1.update(pixels);
+
+    //usleep(1000);
 
 
-
-
-
-
-
-
-
-
-
-
+*/
 
     //Время
     Clock clock; 
@@ -95,16 +96,50 @@ int main()
         Image image;//сфмл изображение
         Texture texture;//сфмл текстура
         Sprite sprite;//сфмл спрайт
+
+        const int WW = 150;
+        const int HH = 150; // you can change this to full window size later
+
+        const int del = 6;
+        const int arr[9] = {1, 1, 1, 1, 9, 1, 1, 1, 1};
+
+
+        sf::Uint8 *pixels = new sf::Uint8[WW*HH*4];
+        const sf::Uint8 *pixels1 = new sf::Uint8[WW*HH*4];
+
     
         Player(String F, float X, float Y, float W, float H){  //Конструктор с параметрами(формальными) для класса Player. При создании объекта класса мы будем задавать имя файла, координату Х и У, ширину и высоту
             File = F;//имя файла+расширение
             w = W; h = H;//высота и ширина
             image.loadFromFile("images/" + File);//запихиваем в image наше изображение вместо File мы передадим то, что пропишем при создании объекта. В нашем случае "hero.png" и получится запись идентичная 	image.loadFromFile("images/hero/png");
-            image.createMaskFromColor(Color(41, 33, 59));//убираем ненужный темно-синий цвет, эта тень мне показалась не красивой.
             texture.loadFromImage(image);//закидываем наше изображение в текстуру
+            pixels1 = image.getPixelsPtr();
+
+            for(int i = 0; i < WW*HH*4; i += 1) {
+                pixels[i] = pixels1[i];
+            }
+
+            for(int i = 0; i < WW*HH*4; i += 1) {
+
+                pixels[i] = (pixels[i - WW - 4] * arr[0] + pixels[i - WW] * arr[1] + pixels[i - WW + 4] * arr[2] + pixels[i - 4] * arr[3] + pixels[i] * arr[4] + pixels[i + 4] * arr[5] + pixels[i + WW - 4] * arr[6] + pixels[i + WW] * arr[7] + pixels[i + WW + 4] * arr[8]) / del;
+                i++;
+                pixels[i] = (pixels[i - WW - 4] * arr[0] + pixels[i - WW] * arr[1] + pixels[i - WW + 4] * arr[2] + pixels[i - 4] * arr[3] + pixels[i] * arr[4] + pixels[i + 4] * arr[5] + pixels[i + WW - 4] * arr[6] + pixels[i + WW] * arr[7] + pixels[i + WW + 4] * arr[8]) / del;
+                i++;
+                pixels[i] = (pixels[i - WW - 4] * arr[0] + pixels[i - WW] * arr[1] + pixels[i - WW + 4] * arr[2] + pixels[i - 4] * arr[3] + pixels[i] * arr[4] + pixels[i + 4] * arr[5] + pixels[i + WW - 4] * arr[6] + pixels[i + WW] * arr[7] + pixels[i + WW + 4] * arr[8]) / del;
+                i++;
+            
+            }
+
+            texture.update(pixels);
+            
+            
+
+            //image.createMaskFromColor(Color(41, 33, 59));//убираем ненужный темно-синий цвет, эта тень мне показалась не красивой.
+            //  texture.loadFromImage(image);//закидываем наше изображение в текстуру
             sprite.setTexture(texture);//заливаем спрайт текстурой
             x = X; y = Y;//координата появления спрайта
-            sprite.setTextureRect(IntRect(0, 0, w, h));  //Задаем спрайту один прямоугольник для вывода одного льва, а не кучи львов сразу. IntRect - приведение типов
+            sprite.setTextureRect(IntRect(0, 0, w*4, h*4));  //Задаем спрайту один прямоугольник для вывода одного кадра, а не кучи львов сразу. IntRect - приведение типов
+            sprite.setTextureRect(IntRect(0, 0, w, h));
     }
 
     void update(float time) //функция "оживления" объекта класса. update - обновление. принимает в себя время SFML , вследствие чего работает бесконечно, давая персонажу движение.
@@ -125,20 +160,10 @@ int main()
 	}
 };
 
-    /* Image heroimage;
-    heroimage.loadFromFile("image/hero.png");
-
-    Texture herotexture;
-    herotexture.loadFromImage(heroimage);
-
-    Sprite herosprite;
-    herosprite.setTexture(herotexture);
-    herosprite.setTextureRect(IntRect(0,0,37.5,37.5));//получили нужный нам прямоугольник
-    herosprite.setPosition(50,25); */
 
     float CurrentFrame;
 
-    Player p("hero.png",150,150,37.5, 37.5);//создаем объект p класса player,задаем "hero.png" как имя файла+расширение, далее координата Х,У, ширина, высота.
+    Player p("test.png",150,150,37.5, 37.5);//создаем объект p класса player,задаем "hero.png" как имя файла+расширение, далее координата Х,У, ширина, высота.
  
 
     while (window.isOpen())
