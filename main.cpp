@@ -1,6 +1,9 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include "map.h" //подключили код с картой
+#include "view.h" //подключили код с видом камеры
+
 //#include <stdio.h>
 //#include <unistd.h>
 // #include "ImGui/"
@@ -18,11 +21,121 @@
 
 using namespace sf;
 
+
+sf::Sprite boss() {
+    const int WW = 286;
+    const int HH = 113;
+    Image bossimg;//объект изображения
+	bossimg.loadFromFile("images/boss.png");//загружаем файл
+    sf::Sprite bosssprite;//создаем объект Sprite(спрайт)
+
+    const int delb = 6;
+    const int arrb[9] = {1, 1, 1, 1, 9, 1, 1, 1, 1};
+
+    sf::Uint8 *pixelsb = new sf::Uint8[WW*HH*4];
+    const sf::Uint8 *pixels1b = new sf::Uint8[WW*HH*4];
+
+	Texture bosstex;//создаем объект Texture (текстура)
+	bosstex.loadFromImage(bossimg);//передаем в него объект Image (изображения)
+
+    pixels1b = bossimg.getPixelsPtr();
+
+    for(int i = 0; i < WW*HH*4; i += 1) {
+        pixelsb[i] = pixels1b[i];
+    }
+
+    for(int i = 0; i < WW*HH*4; i += 1) {
+
+        pixelsb[i] = (pixelsb[i - WW - 4] * arrb[0] + pixelsb[i - WW] * arrb[1] + pixelsb[i - WW + 4] * arrb[2] + pixelsb[i - 4] * arrb[3] + pixelsb[i] * arrb[4] + pixelsb[i + 4] * arrb[5] + pixelsb[i + WW - 4] * arrb[6] + pixelsb[i + WW] * arrb[7] + pixelsb[i + WW + 4] * arrb[8]) / delb;
+        i++;
+        pixelsb[i] = (pixelsb[i - WW - 4] * arrb[0] + pixelsb[i - WW] * arrb[1] + pixelsb[i - WW + 4] * arrb[2] + pixelsb[i - 4] * arrb[3] + pixelsb[i] * arrb[4] + pixelsb[i + 4] * arrb[5] + pixelsb[i + WW - 4] * arrb[6] + pixelsb[i + WW] * arrb[7] + pixelsb[i + WW + 4] * arrb[8]) / delb;
+        i++;
+        pixelsb[i] = (pixelsb[i - WW - 4] * arrb[0] + pixelsb[i - WW] * arrb[1] + pixelsb[i - WW + 4] * arrb[2] + pixelsb[i - 4] * arrb[3] + pixelsb[i] * arrb[4] + pixelsb[i + 4] * arrb[5] + pixelsb[i + WW - 4] * arrb[6] + pixelsb[i + WW] * arrb[7] + pixelsb[i + WW + 4] * arrb[8]) / delb;
+        i++;
+
+    }
+
+    bosstex.update(pixelsb);
+    bosssprite.setTexture(bosstex);
+ 
+
+	//bosssprite.setTexture(bosstex);//передаём в него объект Texture (текстуры)
+    bosssprite.setTextureRect(IntRect(0,0,286,113));
+	bosssprite.setPosition(500, 500);//задаем начальные координаты появления спрайта 
+
+    return bosssprite;
+    }
+
+
+
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(800, 600), "SFML works!");
+    view.reset(sf::FloatRect(0, 0, 800, 600));//размер "вида" камеры при создании объекта вида камеры. (потом можем менять как хотим) Что то типа инициализации.
     // sf::CircleShape shape(100.f);
     // shape.setFillColor(sf::Color::Green);
+
+
+    Image map_image;//объект изображения для карты
+	map_image.loadFromFile("images/background.png");//загружаем файл для карты
+	Texture map;//текстура карты
+	map.loadFromImage(map_image);//заряжаем текстуру картинкой
+	Sprite s_map;//создаём спрайт для карты
+	s_map.setTexture(map);//заливаем текстуру спрайтом
+
+
+
+
+    /////// BOSS ////////// 
+    /*
+    sf::Sprite boss() {
+    const int WW = 286;
+    const int HH = 113;
+    Image bossimg;//объект изображения
+	bossimg.loadFromFile("images/boss.png");//загружаем файл
+    sf::Sprite bosssprite;//создаем объект Sprite(спрайт)
+
+    const int delb = 6;
+    const int arrb[9] = {1, 1, 1, 1, 9, 1, 1, 1, 1};
+
+    sf::Uint8 *pixelsb = new sf::Uint8[WW*HH*4];
+    const sf::Uint8 *pixels1b = new sf::Uint8[WW*HH*4];
+
+	Texture bosstex;//создаем объект Texture (текстура)
+	bosstex.loadFromImage(bossimg);//передаем в него объект Image (изображения)
+
+    pixels1b = bossimg.getPixelsPtr();
+
+    for(int i = 0; i < WW*HH*4; i += 1) {
+        pixelsb[i] = pixels1b[i];
+    }
+
+    for(int i = 0; i < WW*HH*4; i += 1) {
+
+        pixelsb[i] = (pixelsb[i - WW - 4] * arrb[0] + pixelsb[i - WW] * arrb[1] + pixelsb[i - WW + 4] * arrb[2] + pixelsb[i - 4] * arrb[3] + pixelsb[i] * arrb[4] + pixelsb[i + 4] * arrb[5] + pixelsb[i + WW - 4] * arrb[6] + pixelsb[i + WW] * arrb[7] + pixelsb[i + WW + 4] * arrb[8]) / delb;
+        i++;
+        pixelsb[i] = (pixelsb[i - WW - 4] * arrb[0] + pixelsb[i - WW] * arrb[1] + pixelsb[i - WW + 4] * arrb[2] + pixelsb[i - 4] * arrb[3] + pixelsb[i] * arrb[4] + pixelsb[i + 4] * arrb[5] + pixelsb[i + WW - 4] * arrb[6] + pixelsb[i + WW] * arrb[7] + pixelsb[i + WW + 4] * arrb[8]) / delb;
+        i++;
+        pixelsb[i] = (pixelsb[i - WW - 4] * arrb[0] + pixelsb[i - WW] * arrb[1] + pixelsb[i - WW + 4] * arrb[2] + pixelsb[i - 4] * arrb[3] + pixelsb[i] * arrb[4] + pixelsb[i + 4] * arrb[5] + pixelsb[i + WW - 4] * arrb[6] + pixelsb[i + WW] * arrb[7] + pixelsb[i + WW + 4] * arrb[8]) / delb;
+        i++;
+
+    }
+
+    bosstex.update(pixelsb);
+    bosssprite.setTexture(bosstex);
+ 
+
+	//bosssprite.setTexture(bosstex);//передаём в него объект Texture (текстуры)
+    bosssprite.setTextureRect(IntRect(0,0,286,113));
+	bosssprite.setPosition(500, 500);//задаем начальные координаты появления спрайта 
+
+    return bosssprite;
+    }
+    */
+    
+////////////////////////// end boss /////////////////////////////
+
+
 
 
 
@@ -89,8 +202,10 @@ int main()
 
     //Класс игрока
     class Player { // класс Игрока
+    private:
+        float x, y;
     public:
-        float x, y, w, h, dx, dy, speed = 0; //координаты игрока х и у, высота ширина, ускорение (по х и по у), сама скорость
+        float w, h, dx, dy, speed = 0; //координаты игрока х и у, высота ширина, ускорение (по х и по у), сама скорость
         int dir = 0; //направление (direction) движения игрока
         String File; //файл с расширением
         Image image;//сфмл изображение
@@ -119,6 +234,8 @@ int main()
                 pixels[i] = pixels1[i];
             }
 
+            //delete[] pixels1;
+
             for(int i = 0; i < WW*HH*4; i += 1) {
 
                 pixels[i] = (pixels[i - WW - 4] * arr[0] + pixels[i - WW] * arr[1] + pixels[i - WW + 4] * arr[2] + pixels[i - 4] * arr[3] + pixels[i] * arr[4] + pixels[i + 4] * arr[5] + pixels[i + WW - 4] * arr[6] + pixels[i + WW] * arr[7] + pixels[i + WW + 4] * arr[8]) / del;
@@ -138,7 +255,7 @@ int main()
             //  texture.loadFromImage(image);//закидываем наше изображение в текстуру
             sprite.setTexture(texture);//заливаем спрайт текстурой
             x = X; y = Y;//координата появления спрайта
-            sprite.setTextureRect(IntRect(0, 0, w*4, h*4));  //Задаем спрайту один прямоугольник для вывода одного кадра, а не кучи львов сразу. IntRect - приведение типов
+            //sprite.setTextureRect(IntRect(0, 0, w*4, h*4));  //Задаем спрайту один прямоугольник для вывода одного кадра, а не кучи львов сразу. IntRect - приведение типов
             sprite.setTextureRect(IntRect(0, 0, w, h));
     }
 
@@ -158,12 +275,19 @@ int main()
 		speed = 0;//зануляем скорость, чтобы персонаж остановился.
 		sprite.setPosition(x,y); //выводим спрайт в позицию x y , посередине. бесконечно выводим в этой функции, иначе бы наш спрайт стоял на месте.
 	}
+
+    float getplayercoordinateX(){	//этим методом будем забирать координату Х	
+    return x;
+	}
+	float getplayercoordinateY(){	//этим методом будем забирать координату Y 	
+		return y;
+	}
 };
 
 
     float CurrentFrame;
 
-    Player p("test.png",150,150,37.5, 37.5);//создаем объект p класса player,задаем "hero.png" как имя файла+расширение, далее координата Х,У, ширина, высота.
+    Player p("hero.png", 400, 300, 37.5, 37.5);//создаем объект p класса player,задаем "hero.png" как имя файла+расширение, далее координата Х,У, ширина, высота.
  
 
     while (window.isOpen())
@@ -187,6 +311,7 @@ int main()
             CurrentFrame += 0.005*time;
             if (CurrentFrame > 3) CurrentFrame -= 3;
             p.sprite.setTextureRect(IntRect(37.5 * int(CurrentFrame), 37.5*1, 37.5, 37.5)); //через объект p класса player меняем спрайт, делая анимацию (используя оператор точку)
+            getplayercoordinateforview(p.getplayercoordinateX(), p.getplayercoordinateY());//передаем координаты игрока в функцию управления камерой
         }
         
         if ((Keyboard::isKeyPressed(Keyboard::Right) || (Keyboard::isKeyPressed(Keyboard::D)))) {
@@ -194,6 +319,7 @@ int main()
             CurrentFrame += 0.005*time;
             if (CurrentFrame > 3) CurrentFrame -= 3;
             p.sprite.setTextureRect(IntRect(37.5 * int(CurrentFrame), 37.5*2, 37.5, 37.5));  //через объект p класса player меняем спрайт, делая анимацию (используя оператор точку)
+            getplayercoordinateforview(p.getplayercoordinateX(), p.getplayercoordinateY());//передаем координаты игрока в функцию управления камерой
         }
         
         if ((Keyboard::isKeyPressed(Keyboard::Up) || (Keyboard::isKeyPressed(Keyboard::W)))) {
@@ -201,6 +327,7 @@ int main()
             CurrentFrame += 0.005*time;
             if (CurrentFrame > 3) CurrentFrame -= 3;
             p.sprite.setTextureRect(IntRect(37.5 * int(CurrentFrame), 37.5*3, 37.5, 37.5));  //через объект p класса player меняем спрайт, делая анимацию (используя оператор точку)
+            getplayercoordinateforview(p.getplayercoordinateX(), p.getplayercoordinateY());//передаем координаты игрока в функцию управления камерой
         }
         
         if ((Keyboard::isKeyPressed(Keyboard::Down) || (Keyboard::isKeyPressed(Keyboard::S)))) { //если нажата клавиша стрелка влево или англ буква А
@@ -208,12 +335,36 @@ int main()
             CurrentFrame += 0.005*time; //служит для прохождения по "кадрам". переменная доходит до трех суммируя произведение времени и скорости. изменив 0.005 можно изменить скорость анимации
             if (CurrentFrame > 3) CurrentFrame -= 3; //проходимся по кадрам с первого по третий включительно. если пришли к третьему кадру - откидываемся назад.
             p.sprite.setTextureRect(IntRect(37.5 * int(CurrentFrame), 37.5*0, 37.5, 37.5)); //проходимся по координатам Х. получается 96,96*2,96*3 и опять 96
+            getplayercoordinateforview(p.getplayercoordinateX(), p.getplayercoordinateY());//передаем координаты игрока в функцию управления камерой
         }
         
         p.update(time);//оживляем объект p класса Player с помощью времени sfml, передавая время в качестве параметра функции update. благодаря этому персонаж может двигаться
-        
+        viewmap(time);//функция скроллинга карты, передаем ей время sfml
+		changeview();//прикалываемся с камерой вида
+		window.setView(view);//"оживляем" камеру в окне sfml
         window.clear();
+
+
+        		/////////////////////////////Рисуем карту/////////////////////
+		for (int i = 0; i < HEIGHT_MAP; i++)
+		for (int j = 0; j < WIDTH_MAP; j++)
+		{
+			if (TileMap[i][j] == ' ')  s_map.setTextureRect(IntRect(16*0, 16*8, 16, 16)); //если встретили символ пробел, то рисуем 1й квадратик
+			if (TileMap[i][j] == 's')  s_map.setTextureRect(IntRect(16*15, 16*13, 16, 16));//если встретили символ s, то рисуем 2й квадратик
+			if ((TileMap[i][j] == '0')) s_map.setTextureRect(IntRect(16*5, 16*7, 16, 16));//если встретили символ 0, то рисуем 3й квадратик
+ 
+ 
+			s_map.setPosition(j * 16, i * 16);//по сути раскидывает квадратики, превращая в карту. то есть задает каждому из них позицию. если убрать, то вся карта нарисуется в одном квадрате 32*32 и мы увидим один квадрат
+ 
+			window.draw(s_map);//рисуем квадратики на экран
+            
+		}
+
+        sf::Sprite bo = boss();
+
+        window.draw(bo);
         window.draw(p.sprite);//рисуем спрайт объекта p класса player
+
         window.display();
     }
 
