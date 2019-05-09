@@ -21,12 +21,13 @@
 
 using namespace sf;
 
-
-sf::Sprite boss() {
+/*
+sf::Sprite boss() { //sf::Image img) {
     const int WW = 286;
     const int HH = 113;
     Image bossimg;//объект изображения
 	bossimg.loadFromFile("images/boss.png");//загружаем файл
+    //sf::Image bossimg = img;
     sf::Sprite bosssprite;//создаем объект Sprite(спрайт)
 
     const int delb = 6;
@@ -35,7 +36,7 @@ sf::Sprite boss() {
     sf::Uint8 *pixelsb = new sf::Uint8[WW*HH*4];
     const sf::Uint8 *pixels1b = new sf::Uint8[WW*HH*4];
 
-	Texture bosstex;//создаем объект Texture (текстура)
+	sf::Texture bosstex;//создаем объект Texture (текстура)
 	bosstex.loadFromImage(bossimg);//передаем в него объект Image (изображения)
 
     pixels1b = bossimg.getPixelsPtr();
@@ -66,7 +67,7 @@ sf::Sprite boss() {
     return bosssprite;
     }
 
-
+*/
 
 int main()
 {
@@ -85,8 +86,16 @@ int main()
 
 
 
-
     /////// BOSS ////////// 
+
+    
+    //sf::Sprite bo = boss();
+    //Image bossimg;//объект изображения
+
+    //if(!bossimg.loadFromFile("images/boss.png")) std::cout << "ploho";
+	//bossimg.loadFromFile("images/boss.png");//загружаем файл
+
+
     /*
     sf::Sprite boss() {
     const int WW = 286;
@@ -212,6 +221,7 @@ int main()
         Texture texture;//сфмл текстура
         Sprite sprite;//сфмл спрайт
 
+
         const int WW = 150;
         const int HH = 150; // you can change this to full window size later
 
@@ -226,6 +236,7 @@ int main()
         Player(String F, float X, float Y, float W, float H){  //Конструктор с параметрами(формальными) для класса Player. При создании объекта класса мы будем задавать имя файла, координату Х и У, ширину и высоту
             File = F;//имя файла+расширение
             w = W; h = H;//высота и ширина
+
             image.loadFromFile("images/" + File);//запихиваем в image наше изображение вместо File мы передадим то, что пропишем при создании объекта. В нашем случае "hero.png" и получится запись идентичная 	image.loadFromFile("images/hero/png");
             texture.loadFromImage(image);//закидываем наше изображение в текстуру
             pixels1 = image.getPixelsPtr();
@@ -288,7 +299,7 @@ int main()
     float CurrentFrame;
 
     Player p("hero.png", 400, 300, 37.5, 37.5);//создаем объект p класса player,задаем "hero.png" как имя файла+расширение, далее координата Х,У, ширина, высота.
- 
+
 
     while (window.isOpen())
     {
@@ -360,9 +371,9 @@ int main()
             
 		}
 
-        sf::Sprite bo = boss();
+              //bossimg);
 
-        window.draw(bo);
+        //window.draw(bo);
         window.draw(p.sprite);//рисуем спрайт объекта p класса player
 
         window.display();
